@@ -99,55 +99,36 @@ Mel Spectrograms are extracted from each audio recording and used as image repre
 
 Transfer Learning is employed using EfficientNetB0 pretrained on ImageNet.
 
-## Architecture Pipeline
+### Architecture Pipeline
 
-```text
-                ┌─────────────────────┐
-                │     Input Audio     │
-                └──────────┬──────────┘
-                           │
-                           ▼
-                ┌─────────────────────┐
-                │ Audio Preprocessing │
-                │ • Resampling        │
-                │ • Mono Conversion   │
-                └──────────┬──────────┘
-                           │
-                           ▼
-                ┌─────────────────────┐
-                │  Mel Spectrogram    │
-                │   (128 × 128)       │
-                └──────────┬──────────┘
-                           │
-                           ▼
-                ┌─────────────────────┐
-                │ EfficientNetB0      │
-                │ Feature Extractor   │
-                └──────────┬──────────┘
-                           │
-                           ▼
-                ┌─────────────────────┐
-                │ Global Average      │
-                │ Pooling Layer       │
-                └──────────┬──────────┘
-                           │
-                           ▼
-                ┌─────────────────────┐
-                │ Dense Layer         │
-                │ 128 Units (ReLU)    │
-                └──────────┬──────────┘
-                           │
-                           ▼
-                ┌─────────────────────┐
-                │ Dropout Layer       │
-                │ Rate = 0.4          │
-                └──────────┬──────────┘
-                           │
-                           ▼
-                ┌─────────────────────┐
-                │ Sigmoid Output      │
-                │ Genuine / Deepfake  │
-                └─────────────────────┘
+Input Audio
+
+↓
+
+Mel Spectrogram
+
+↓
+
+EfficientNetB0 Feature Extractor
+
+↓
+
+Global Average Pooling Layer
+
+↓
+
+Dense Layer (128 Units, ReLU)
+
+↓
+
+Dropout Layer (0.4)
+
+↓
+
+Sigmoid Output Layer
+
+---
+
 ## Training Configuration
 
 | Parameter                | Value               |
@@ -232,4 +213,3 @@ Deepfake-Audio-Detection
 ├── requirements.txt
 └── README.md
 ```
-
