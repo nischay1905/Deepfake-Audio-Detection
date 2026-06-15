@@ -4,18 +4,14 @@ import numpy as np
 import librosa
 import tempfile
 
-# -------------------------
-# Load Model
-# -------------------------
 
+# Load trained model
 model = tf.keras.models.load_model(
     "models/deepfake_audio_model_20k.keras"
 )
 
-# -------------------------
-# Feature Extraction
-# -------------------------
 
+# Feature extraction
 def extract_mel(audio_path):
 
     y, sr = librosa.load(
@@ -61,19 +57,16 @@ def extract_mel(audio_path):
     return mel_db
 
 
-# -------------------------
 # Streamlit UI
-# -------------------------
-
-st.title("🎙️ Deepfake Audio Detection")
+st.title("Deepfake Audio Detection")
 
 st.write(
-    "Upload an audio file to determine whether it is Genuine or Deepfake."
+    "Upload an audio file and the model will classify it as Genuine or Deepfake."
 )
 
 uploaded_file = st.file_uploader(
-    "Upload Audio File",
-    type=["wav","mp3"]
+    "Choose an audio file",
+    type=["wav", "mp3"]
 )
 
 if uploaded_file is not None:
@@ -91,21 +84,26 @@ if uploaded_file is not None:
 
     features = extract_mel(temp_path)
 
-    pred = model.predict(features)[0][0]
+    prediction = model.predict(
+        features,
+        verbose=0
+    )[0][0]
 
     confidence = max(
-        pred,
-        1-pred
+        prediction,
+        1 - prediction
     ) * 100
 
-    if pred > 0.5:
+    st.subheader("Result")
 
-        st.error(
-            f"🤖 Deepfake Audio\n\nConfidence: {confidence:.2f}%"
-        )
+    if prediction > 0.5:
+
+        st.write("Prediction: Deepfake Audio")
 
     else:
 
-        st.success(
-            f"🎤 Genuine Human Speech\n\nConfidence: {confidence:.2f}%"
-        )
+        st.write("Prediction: Genuine Audio")
+
+    st.write(
+        f"Confidence Score: {confidence:.2f}%"
+    )
