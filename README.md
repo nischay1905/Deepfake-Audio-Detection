@@ -1,162 +1,200 @@
-# Deepfake Audio Detection 
+# Deepfake Audio Detection
 
 ### MARS Club IIT Roorkee – Open Projects 2026
 
 ---
 
-##  Project Overview
+## Project Overview
 
-With the rapid advancement of Generative AI technologies, creating realistic synthetic speech has become easier than ever. While these technologies offer many benefits, they also introduce serious challenges related to misinformation, identity theft, voice cloning, and digital fraud.
+Recent advances in Generative AI have made it possible to synthesize highly realistic human speech. While these technologies have numerous beneficial applications, they also pose significant risks related to misinformation, voice cloning, identity theft, and digital fraud.
 
-This project presents a Deep Learning-based system capable of distinguishing between genuine human speech and AI-generated deepfake audio. The model converts speech recordings into Mel Spectrogram representations and leverages EfficientNetB0 to learn discriminative patterns between authentic and synthetic speech.
+This project presents a Deep Learning-based Deepfake Audio Detection system capable of classifying speech recordings as either:
 
-The proposed system demonstrates strong performance on unseen audio samples and successfully satisfies all project verification requirements.
+* Genuine (Human Speech)
+* Deepfake (AI-Generated Speech)
 
----
+The proposed solution converts audio recordings into Mel Spectrogram representations and employs EfficientNetB0 with transfer learning to identify discriminative patterns between authentic and synthetic speech.
 
-##  Problem Statement
-
-Develop a Machine Learning or Deep Learning system capable of classifying speech recordings as:
-
-- Genuine (Human Speech)
-- Deepfake (AI-Generated Speech)
-
-The model should generalize well to previously unseen audio samples and demonstrate robust performance on the evaluation dataset.
+The system demonstrates strong performance on unseen audio samples and satisfies all verification requirements specified in the project statement.
 
 ---
 
-### Live Demo
+## Problem Statement
 
-Add your Streamlit deployment link here:
+Develop a Machine Learning or Deep Learning model capable of classifying speech recordings as:
 
-[https://your-streamlit-app-link.streamlit.app](https://deepfake-audio-detection-sgkw8zmfzcjycpmvnwjkga.streamlit.app/)
+* Genuine (Human Speech)
+* Deepfake (AI-Generated Speech)
 
-##  Dataset
-
-Dataset Used:
-
-**The Fake-or-Real (FoR) Dataset**
-
-The dataset contains thousands of audio recordings categorized into:
-
-- Genuine Human Speech
-- AI Generated Speech
-
-Dataset Structure:
-
-- Training Set
-- Validation Set
-- Testing Set
-
-For this implementation, approximately **20,000 audio samples** were used for training and evaluation.
+The model should generalize effectively to unseen audio samples and provide robust performance on evaluation datasets.
 
 ---
 
-## ⚙️ Methodology
+## Live Demo
+
+Streamlit Web Application:
+
+https://deepfake-audio-detection-sgkw8zmfzcjycpmvnwjkga.streamlit.app/
+
+---
+
+## Dataset
+
+### Dataset Used
+
+**Fake-or-Real (FoR) Dataset**
+
+The dataset consists of thousands of speech recordings belonging to two classes:
+
+* Genuine Human Speech
+* AI-Generated Speech
+
+### Dataset Split
+
+* Training Set
+* Validation Set
+* Testing Set
+
+For this implementation, approximately **20,000 audio samples** were used during training and evaluation.
+
+---
+
+## Methodology
 
 ### 1. Data Collection
 
-Audio samples were loaded from the Fake-or-Real dataset and organized into training, validation, and testing sets.
+Audio recordings were collected from the Fake-or-Real (FoR) dataset and organized into training, validation, and testing subsets.
 
 ### 2. Audio Preprocessing
 
-Each audio file was:
+Each audio sample undergoes the following preprocessing steps:
 
-- Loaded using Librosa
-- Converted to mono audio
-- Resampled to a uniform sampling rate
-- Converted into Mel Spectrograms
+* Audio loading using Librosa
+* Mono channel conversion
+* Resampling to a fixed sampling rate
+* Amplitude normalization
+* Mel Spectrogram generation
 
 ### 3. Feature Extraction
 
-Mel Spectrograms were generated for each audio sample.
+Mel Spectrograms are extracted from each audio recording and used as image representations of speech.
 
-Why Mel Spectrograms?
+#### Why Mel Spectrograms?
 
-- Capture frequency information effectively
-- Widely used in speech recognition
-- Preserve important speech characteristics
-- Work well with CNN-based architectures
+* Capture important frequency-domain information
+* Preserve speech characteristics effectively
+* Commonly used in speech processing applications
+* Compatible with CNN-based architectures
 
 ### 4. Data Preparation
 
-- Spectrogram Size: 128 × 128
-- Single channel converted to RGB format
-- Dataset shuffled before training
-- Stratified train-test split applied
+* Spectrogram size: 128 × 128
+* Single-channel spectrogram converted to RGB format
+* Dataset shuffled before training
+* Stratified train-test split applied
 
-### 5. Model Architecture
+---
 
-Transfer Learning was used through EfficientNetB0.
+## Model Architecture
 
-Architecture:
+Transfer Learning is employed using EfficientNetB0 pretrained on ImageNet.
 
-Input Spectrogram
+### Architecture Pipeline
+
+Input Audio
+
 ↓
-EfficientNetB0
+
+Mel Spectrogram
+
 ↓
-Global Average Pooling
+
+EfficientNetB0 Feature Extractor
+
 ↓
-Dense Layer (128)
+
+Global Average Pooling Layer
+
 ↓
-Dropout (0.4)
+
+Dense Layer (128 Units, ReLU)
+
 ↓
+
+Dropout Layer (0.4)
+
+↓
+
 Sigmoid Output Layer
 
 ---
 
-## Deep Learning Model
+## Training Configuration
 
-Model Used:
+| Parameter                | Value               |
+| ------------------------ | ------------------- |
+| Framework                | TensorFlow / Keras  |
+| Model                    | EfficientNetB0      |
+| Optimizer                | Adam                |
+| Loss Function            | Binary Crossentropy |
+| Batch Size               | 64                  |
+| Epochs                   | 15                  |
+| Early Stopping           | Enabled             |
+| Learning Rate Scheduling | Enabled             |
 
-- EfficientNetB0
-- TensorFlow / Keras
+---
 
-Training Configuration:
+## Project Pipeline
 
-- Optimizer: Adam
-- Loss Function: Binary Crossentropy
-- Batch Size: 64
-- Epochs: 15
-- Early Stopping
-- Learning Rate Scheduling
+1. Load Audio Files
+2. Preprocess Audio Signals
+3. Generate Mel Spectrograms
+4. Resize Spectrograms to 128 × 128
+5. Convert Spectrograms to RGB Images
+6. Train EfficientNetB0 Model
+7. Evaluate Model Performance
+8. Compute Accuracy, F1 Score, EER, and Confusion Matrix
+9. Deploy Using Streamlit
 
 ---
 
 ## Performance Results
 
-### Overall Metrics
+### Evaluation Metrics
 
-| Metric | Score |
-|----------|----------|
-| Accuracy | 95.45% |
-| F1 Score | 95.50% |
-| Equal Error Rate (EER) | 4.47% |
-
-### Verification Requirements
-
-| Requirement | Threshold | Achieved |
-|-------------|------------|-----------|
-| Accuracy | ≥ 80% | ✅ 95.45% |
-| F1 Score | ≥ 80% | ✅ 95.50% |
-| EER | ≤ 12% | ✅ 4.47% |
-| Per-Class Accuracy | ≥ 75% | ✅ Passed |
+| Metric                 | Score  |
+| ---------------------- | ------ |
+| Accuracy               | 95.45% |
+| F1 Score               | 95.50% |
+| Equal Error Rate (EER) | 4.47%  |
 
 ---
 
-##  Confusion Matrix
+## Verification Requirements
 
-|               | Predicted Genuine | Predicted Deepfake |
-|---------------|-------------------|--------------------|
-| Actual Genuine | 1887 | 123 |
-| Actual Deepfake | 59 | 1931 |
+| Requirement        | Threshold | Achieved |
+| ------------------ | --------- | -------- |
+| Accuracy           | ≥ 80%     |  95.45% |
+| F1 Score           | ≥ 80%     |  95.50% |
+| EER                | ≤ 12%     |  4.47%  |
+| Per-Class Accuracy | ≥ 75%     |  Passed |
+
+---
+
+## Confusion Matrix
+
+| Actual / Predicted | Genuine | Deepfake |
+| ------------------ | ------- | -------- |
+| Genuine            | 1887    | 123      |
+| Deepfake           | 59      | 1931     |
+
+### Visualization
+
+![Confusion Matrix](reports/confusion_matrix.png)
 
 ---
 
-
-
----
-## 📁 Repository Structure
+## Repository Structure
 
 ```text
 Deepfake-Audio-Detection
@@ -168,30 +206,11 @@ Deepfake-Audio-Detection
 │   └── deepfake_audio_model_20k.keras
 │
 ├── reports
+│   ├── README.md
 │   └── confusion_matrix.png
 │
 ├── app.py
-│
 ├── requirements.txt
-│
 └── README.md
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-MARS Club IIT Roorkee – Open Projects 2026
-
----
-
-## 📜 License
-
-This project is developed for educational and research purposes under the MARS Club IIT Roorkee Open Projects Program.
