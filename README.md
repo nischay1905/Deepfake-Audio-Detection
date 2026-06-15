@@ -102,29 +102,17 @@ Transfer Learning is employed using EfficientNetB0 pretrained on ImageNet.
 ### Architecture Pipeline
 
 Input Audio
-
-↓
-
+    ↓
 Mel Spectrogram
-
-↓
-
+    ↓
 EfficientNetB0 Feature Extractor
-
-↓
-
+    ↓
 Global Average Pooling Layer
-
-↓
-
+    ↓
 Dense Layer (128 Units, ReLU)
-
-↓
-
+    ↓
 Dropout Layer (0.4)
-
-↓
-
+    ↓
 Sigmoid Output Layer
 
 ---
