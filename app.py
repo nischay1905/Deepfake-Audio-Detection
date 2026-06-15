@@ -10,8 +10,7 @@ import tempfile
 
 MODEL_PATH = "models/deepfake_audio_model_20k.keras"
 IMG_SIZE = (128, 128)
-SAMPLE_RATE = 22050
-DURATION = 4
+SAMPLE_RATE = 16000
 
 st.set_page_config(page_title="Deepfake Audio Detection", layout="centered")
 
@@ -26,25 +25,18 @@ def get_model():
 model = get_model()
 
 
-def audio_to_melspectrogram(file_path, sr=SAMPLE_RATE, duration=DURATION, img_size=IMG_SIZE):
-    y, sr = librosa.load(file_path, sr=sr, mono=True, duration=duration)
-
-    target_len = sr * duration
-    if len(y) < target_len:
-        y = np.pad(y, (0, target_len - len(y)))
-    else:
-        y = y[:target_len]
+def audio_to_melspectrogram(file_path, sr=SAMPLE_RATE, img_size=IMG_SIZE):
+    y, sr = librosa.load(file_path, sr=sr)
 
     mel = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=img_size[0])
-    mel_db = librosa.power_to_db(mel, ref=np.max)
+    mel_db = librosa.power_to_db(mel)
 
-    mel_norm = (mel_db - mel_db.min()) / (mel_db.max() - mel_db.min() + 1e-8)
-    mel_img = (mel_norm * 255).astype(np.uint8)
+    mel_resized = tf.image.resize(mel_db[..., np.newaxis], img_size)
+    mel_resized = mel_resized.numpy()
 
-    mel_img_resized = tf.image.resize(mel_img[..., np.newaxis], img_size).numpy().squeeze()
-    mel_rgb = np.stack([mel_img_resized] * 3, axis=-1)
+    mel_rgb = np.repeat(mel_resized, 3, axis=-1)
 
-    return mel_rgb.astype(np.float32) / 255.0, mel_db
+    return mel_rgb.astype(np.float32), mel_db
 
 
 def predict(file_path):
