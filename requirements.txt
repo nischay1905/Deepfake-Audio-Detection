@@ -1,6 +1,6 @@
 streamlit
 tensorflow==2.18.0
-keras==3.7.0
+keras>=3.7.0
 librosa
 numpy<2.0
 matplotlib
